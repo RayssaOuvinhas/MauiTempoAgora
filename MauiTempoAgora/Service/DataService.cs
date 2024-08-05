@@ -26,14 +26,19 @@ namespace MauiTempoAgora.Service
                 {
                     string json = response.Content.ReadAsStringAsync().Result;
 
+                    Debug.WriteLine("------------------------------");
+                    Debug.WriteLine(json);
+                    Debug.WriteLine("------------------------------");
+
                     var rascunho = JObject.Parse(json);
+
+                    Debug.WriteLine("------------------------------");
+                    Debug.WriteLine(json);
+                    Debug.WriteLine("------------------------------");
 
                     DateTime time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                     DateTime sunrise = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
                     DateTime sunset = time.AddSeconds((double)rascunho["sys"]["sunset"]).ToLocalTime();
-
-                    //
-                    //
 
                     tempo = new()
                     {
@@ -47,10 +52,10 @@ namespace MauiTempoAgora.Service
                         Weather = (string)rascunho["weather"][0]["main"],
                         WeatherDescription = (string)rascunho["weather"][0]["description"]
                     };
-                }
+                }// fecha if
+            }// fecha using
 
-
-            }
-        }
+            return tempo;
+        }// fecha metodo
     }
 }
