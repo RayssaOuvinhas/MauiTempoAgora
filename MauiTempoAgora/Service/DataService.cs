@@ -1,8 +1,6 @@
 ﻿using MauiTempoAgora.Models;
-using System.Diagnostics;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
+using System.Diagnostics;
 
 namespace MauiTempoAgora.Service
 {

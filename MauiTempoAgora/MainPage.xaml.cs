@@ -1,4 +1,6 @@
-﻿using Microsoft.Maui.Devices.Sensors;
+﻿using MauiTempoAgora.Models;
+using MauiTempoAgora.Service;
+using Microsoft.Maui.Devices.Sensors;
 using System.Diagnostics;
 
 namespace MauiTempoAgora
@@ -65,7 +67,8 @@ namespace MauiTempoAgora
             if (placemark != null) 
             {
                 cidade = placemark.Locality;
-                
+
+                return
                 $"AdminArea:         {placemark.AdminArea}\n" +
                 $"CountryCode:       {placemark.CountryCode}\n" +
                 $"CountryName:       {placemark.CountryName}\n" +
@@ -80,14 +83,53 @@ namespace MauiTempoAgora
             return "Nada";
         }
 
-        private void Button_Clicked_1(object sender, EventArgs e)
+        private async void Button_Clicked_1(object sender, EventArgs e)
         {
+            double latitude = Convert.ToDouble(lbl_latitude.Text);
+            double longitude = Convert.ToDouble(lbl_longitude.Text);
 
+            lbl_reverso.Text = await GetGeocodeReverseData(latitude, longitude);
         }
 
-        private void Button_Clicked_2(object sender, EventArgs e)
+        private async void Button_Clicked_2(object sender, EventArgs e)
         {
+            try
+            {
+                if (!String.IsNullOrEmpty(cidade))
+                {
+                    Tempo? previsao = await DataService.GetPrevisaoDoTempo(cidade);
 
+                    string dados_previsao = "";
+
+                    if (previsao != null) 
+                    {
+                        dados_previsao =
+                        $"Humidade:         {previsao.Humidity}\n" +
+                        $"Nascer do sol:       {previsao.Sunrise}\n" +
+                        $"Por do sol:       {previsao.Sunset}\n" +
+                        $"Temperatura:       {previsao.Temperature}\n" +
+                        $"Titulo:          {previsao.Title}\n" +
+                        $"Visibilidade:        {previsao.Visibility}\n" +
+                        $"Vento:      {previsao.Wind}\n" +
+                        $"Previsao:       {previsao.Weather}\n" +
+                        $"Descrição:   {previsao.WeatherDescription}\n";
+                    }
+                    else
+                    {
+                        dados_previsao = $"Sem dados, previsão nula.";
+                    }
+
+                    Debug.WriteLine("------------------------------");
+                    Debug.WriteLine(dados_previsao);
+                    Debug.WriteLine("------------------------------");
+
+                    lbl_previsao.Text = dados_previsao;
+                }
+            }
+            catch (Exception ex) 
+            {
+                await DisplayAlert("Erro", ex.Message,"OK");
+            }
         }
     }
 
